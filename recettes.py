@@ -123,35 +123,97 @@ for index, row in df.iterrows():
 
 #%% ---------------- Requêtes -------------------
 
-# Récupérer liste contenant toutes les recettes 
-rq = "match (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN DISTINCT r"
-data = graph.run(rq).data()
-for elem in data:
-    print(elem['r']['name'])
+# ==============
+# Listes de base
+# ==============
+ 
+def list_recipes ():
+    """
+    Renvoie la liste de tous les noms de recettes de la base de données
     
-# Récupérer liste contenant tous les ingrédients de la base de données 
-rq = "match (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN DISTINCT i"
-data = graph.run(rq).data()
-for elem in data:
-    print(elem['i']['name'])
+    Input : /
+    
+    Output : 
+        * liste
+    """
+    
+    L = []    
+    rq = "match (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN DISTINCT r"
+    data = graph.run(rq).data()
+    for elem in data:
+        L.append(elem['r']['name'])
+    return (L)
+
+
+def list_ingredients ():
+    """
+    Renvoie la liste de tous les noms d'ingrédients de la base de données
+    
+    Input : /
+    
+    Output : 
+        * liste
+    """    
+    
+    L = []
+    rq = "match (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN DISTINCT i"
+    data = graph.run(rq).data()
+    for elem in data:
+        L.append(elem['i']['name'])
+    return (L)
+
+# =============
+# Visualisation
+# =============
+
+rq = "MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN list(r, count(DISTINCT i)"
+
+
 
 # Récupérer liste des ingrédients d'une recette choisie 
 
 my_r = "Hazelnut Chicken"
-rq_i = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE r.name IN [\'{my_r}\'] RETURN  i"
-data = graph.run(rq_i).data()
-for elem in data:
-    print(elem['i']['name'])
+
+
+def get_ingredients (my_r):
+    """
+    Renvoie la liste de tous les noms d'ingrédients de la recette donnée en entrée 
     
+    Input : 
+        * my_r : chaîne de caractères (nom de recette)
+    
+    Output : 
+        * liste (noms d'ingrédients)
+    """    
+    
+    L = list()    
+    rq = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE r.name IN [\'{my_r}\'] RETURN  i"
+    data = graph.run(rq).data()
+    for elem in data:
+        L.append(elem['i']['name'])
+    return L
+
+
 
 # Récupérer liste des recettes contenant un ingrédient donné
-my_i_yes = list()
-my_i_no = list()
-
-rq = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE i.name IN {my_i_yes} AND WHERE i.name NOT IN {my_i_no} RETURN r"
-data = graph.run(rq).data()
-for elem in data:
-    print(elem['r']['name'])
-        
+def get_recipes():
+    """
+    Renvoie la liste de toutes les recettes contenant au moins les ingrédients de my_i_yes et ne contenant pas ceux de my_i_no donnés en entrée 
+    
+    Input : 
+        * my_i_yes : liste (ingrédients)
+        * my_i_no : liste (ingrédients)
+    
+    Output : liste (noms de recettes)
+    """
+    L = list()
+    my_i_yes = list()
+    my_i_no = list()
+    
+    rq = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE i.name IN {my_i_yes} AND WHERE i.name NOT IN {my_i_no} RETURN r"
+    data = graph.run(rq).data()
+    for elem in data:
+        L.append(elem['r']['name'])
+    return L
 
 
