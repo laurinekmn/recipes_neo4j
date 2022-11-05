@@ -11,8 +11,8 @@ import pandas as pd
 import os
 
 # Connection au graphe Neo4J
-graph = Graph("bolt://localhost:7687", 
-              auth=("neo4j", "123"))
+global graph
+graph = Graph("bolt://localhost:7687", auth=("neo4j", "123"))
 
 # Setting working directory
 os.chdir("D:/Documents/3A/bigdata/Recipes/recipes_neo4j/")
@@ -183,15 +183,15 @@ def get_ingredients (my_r):
         * my_r : chaîne de caractères (nom de recette)
     
     Output : 
-        * liste (noms d'ingrédients)
+        * chaîne de caractères (noms d'ingrédients séparés par des virgules)
     """    
     
-    L = list()    
+    L = str()    
     rq = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE r.name IN [\'{my_r}\'] RETURN  i"
     data = graph.run(rq).data()
     for elem in data:
-        L.append(elem['i']['name'])
-    return L
+        L = L + "\n" + str(elem['i']['name'])
+    return L[1:]
 
 
 
