@@ -9,14 +9,15 @@ from tkinter import *
 from tkinter import ttk
 from onglets import create_VIZ, create_ING, create_REC
 from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
-#%%
+
+#%% --------------- COULEURS DE L'INTERFACE ------------------
 
 COLOR_BG = "#c1bebe"
 COLOR_ACCENT1 = "#3d915f"
 COLOR_ACCENT2 = "#855f53"
 COLOR_ACCENT3 = "#608e85"
 
-#%%
+#%% ------------ SOUS-FENÊTRES DE L'INTERFACE-----------------
 
 def create_VIZ():
     
@@ -38,22 +39,27 @@ def create_ING():
     win = Toplevel(window)
     win.geometry("780x600")
     win.config(background = COLOR_BG)
-
+    
+    # Espaces entre les différents éléments 
     Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
-    Space0 = Label(win, text = "", height = 4, bg = COLOR_BG)
+    Space0 = Label(win, text = "", height = 1, bg = COLOR_BG)
     Space1 = Label(win, text = "", height = 3, bg = COLOR_BG)
     Space2 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space3 = Label(win, text = "", height = 3, bg = COLOR_BG)
 
+    # Titre de la fenêtre
     Main_title = Label(win, text = "List of ingredients", 
                        font = ("Arial", 28, "bold"), 
                        bg = COLOR_BG, 
                        fg = COLOR_ACCENT2)
     
+    # Explication du fonctionnement de la fenêtre
+    Explication = Label(win, text = "1) Choose a recipe from the list \n \n 2) Click the \"Update the list\" button to see the list of the ingredient!",
+                        font = ("Arial", 13, "italic"), 
+                        bg = COLOR_BG, 
+                        fg = "black")
     
-    # ===========================
     # Menu déroulant des recettes     
-    # ===========================
-
     OptionList = list_recipes()
 
     var = StringVar(win)
@@ -66,7 +72,7 @@ def create_ING():
     opt.config(width=90, 
                font=('Arial', 14, "bold"), 
                bg = COLOR_BG, 
-               fg = COLOR_ACCENT2)
+               fg = "black")
     
     # Bouton pour mettre à jour la liste des ingrédients 
     def update_L_ing ():
@@ -81,6 +87,7 @@ def create_ING():
                     command = update_L_ing)
     
     
+    # Liste des ingrédients de la recette sélectionnée
     ListIng = Label(win, 
                     font = ("Arial", 13), 
                     bg = COLOR_BG, 
@@ -88,18 +95,17 @@ def create_ING():
                     textvariable = L_ing)
     
     
-    
-    
-    
+    # "Construction" de la fenêtre avec pack 
     Spacetop.pack()
     Main_title.pack()  
     Space0.pack()
-    opt.pack()
+    Explication.pack()
     Space1.pack()
-    update.pack()
+    opt.pack()
     Space2.pack()
+    update.pack()
+    Space3.pack()
     ListIng.pack()
-    
     
 def create_REC():
     win = Toplevel(window)
@@ -116,31 +122,40 @@ def create_REC():
     Main_title.pack() 
 
 
-#%% ----------- FENETRE D'ACCUEIL ---------------
+#%% ------------------ FENETRE D'ACCUEIL ---------------------
 
 global window
+
+# ================================
+# ELEMENTS DE LA FENETRE D'ACCUEIL
+# ================================
+
+# Création d'une fenêtre 
 window = Tk()
 window.title("Neo4j project - Recipes finder")
 window.geometry("780x600")
 window.config(background = COLOR_BG)
 frame = Frame (window, bg = COLOR_BG)
 
+# Sous-titre - fenêtre d'accueil
 Sub_title = Label(frame, text = "FIND A RECIPE WITH", 
                   font = ("Arial", 12), 
                   bg = COLOR_BG, 
                   fg = COLOR_ACCENT2)
 
+# Titre - fenêtre d'accueil
 Main_title = Label(frame, text = "Recipe Finder", 
                    font = ("Arial", 28, "bold"), 
                    bg = COLOR_BG, 
                    fg = "black")
 
-
+# Explication du fonctionnement de l'interface
 Intro = Label(frame, text = "Welcome on Recipe Finder! To start, click on one of the three buttons below.",
               font = ("Arial", 12), 
               bg = COLOR_BG,
               fg = "black")
 
+# Espaces entre les éléments
 Spacetop = Label(frame, text = "", height = 3, bg = COLOR_BG)
 Space0 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 Space1 = Label(frame, text = "", height = 3, bg = COLOR_BG)
@@ -176,6 +191,8 @@ Bouton2 = Button(frame, text = "Find a recipe by selecting ingredients",
 # ====
 # Menu 
 # ====
+
+# Création d'un menu en haut de la fenêtre d'accueil permettant de quitter l'interface
 menup = Menu(window)
 
 menu1 = Menu(window, tearoff = 0)
@@ -218,17 +235,5 @@ window.mainloop()
 
 
 
-
-
-
 # Lancer un fichier par un autre 
 # os.system(nomdefichier.py)
-
-
-
-v = StringVar()
-entry = Entry(window, textvariable = v)
-lab = Label(window, textvariable = v)
-
-entry.pack()
-lab.pack()
