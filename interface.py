@@ -8,7 +8,7 @@ Created on Fri Nov  4 19:04:15 2022
 from tkinter import *
 from tkinter import ttk
 from onglets import create_VIZ, create_ING, create_REC
-from recettes.py import list_ingredients, list_recipes, get_ingredients
+from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
 #%%
 
 COLOR_BG = "#c1bebe"
@@ -40,7 +40,9 @@ def create_ING():
     win.config(background = COLOR_BG)
 
     Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
-    Space0 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space0 = Label(win, text = "", height = 4, bg = COLOR_BG)
+    Space1 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space2 = Label(win, text = "", height = 3, bg = COLOR_BG)
 
     Main_title = Label(win, text = "List of ingredients", 
                        font = ("Arial", 28, "bold"), 
@@ -54,22 +56,50 @@ def create_ING():
 
     OptionList = list_recipes()
 
-    variable = StringVar(win)
-    variable.set(OptionList[0])
+    var = StringVar(win)
+    L_ing = StringVar(win)
+    var.set(OptionList[0])
+    L_ing.set(get_ingredients(var.get()))
 
-
-    opt = OptionMenu(win, variable, *OptionList)
-    opt.config(width=90, font=('Helvetica', 12))
+    # Menu 
+    opt = OptionMenu(win, var, *OptionList)
+    opt.config(width=90, 
+               font=('Arial', 14, "bold"), 
+               bg = COLOR_BG, 
+               fg = COLOR_ACCENT2)
     
-    L_ing = get_ingredients(variable.get())
+    # Bouton pour mettre à jour la liste des ingrédients 
+    def update_L_ing ():
+        v = var.get()
+        L_ing.set(get_ingredients(v))
     
-    ListIng = Label(win, text = L_ing)
+    update = Button(win, 
+                    text = "Update the list", 
+                    font = ("Arial", 16, "bold"), 
+                    bg = COLOR_ACCENT3, 
+                    fg = "white",
+                    command = update_L_ing)
+    
+    
+    ListIng = Label(win, 
+                    font = ("Arial", 13), 
+                    bg = COLOR_BG, 
+                    fg = "black",
+                    textvariable = L_ing)
+    
+    
+    
+    
     
     Spacetop.pack()
     Main_title.pack()  
     Space0.pack()
     opt.pack()
+    Space1.pack()
+    update.pack()
+    Space2.pack()
     ListIng.pack()
+    
     
 def create_REC():
     win = Toplevel(window)
@@ -181,6 +211,9 @@ Space3.pack()
 Bouton2.pack()
 
 window.config(menu=menup)
+
+
+
 window.mainloop()
 
 
@@ -190,3 +223,12 @@ window.mainloop()
 
 # Lancer un fichier par un autre 
 # os.system(nomdefichier.py)
+
+
+
+v = StringVar()
+entry = Entry(window, textvariable = v)
+lab = Label(window, textvariable = v)
+
+entry.pack()
+lab.pack()
