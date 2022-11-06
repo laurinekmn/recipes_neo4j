@@ -9,6 +9,7 @@ from py2neo import Graph, Node, Relationship
 import pandas as pd
 # from pandas import DataFrame
 import os
+import numpy as np
 
 # Connection au graphe Neo4J
 global graph
@@ -19,10 +20,13 @@ os.chdir("D:/Documents/3A/bigdata/Recipes/recipes_neo4j/")
 
 # Import dataset
 df = pd.read_csv("./Data/recipes_data.csv", delimiter=",")
+# df = np.array(df)
 
 #%% --------------- SUBSET FOR TESTS -----------------
 
-df2 = df.copy()[1:6]
+df2 = df.copy()[1:200]
+
+df2['label'] = df2['label'].str.replace("'", "")
 colnames = list(df2.columns)
 colnames = colnames[1: ]
 df2.dtypes
@@ -52,13 +56,12 @@ graph.run("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r")
 
 recipe = {}
 
-for index, row in df.iterrows(): #index est un entier, rows est pd.Series
+for index, row in df2.iterrows(): #index est un entier, rows est pd.Series
     # print(index, type(index))
     # print(row, type(row))
     recipe[row['label']] = Node("Recipe",
                                 name = str(row['label'])
                                 )
-
 
 # =====================================
 # Creation of nodes for each ingredient 
@@ -66,7 +69,7 @@ for index, row in df.iterrows(): #index est un entier, rows est pd.Series
 
 ingredients = {}
 
-for name, col in df.iteritems():
+for name, col in df2.iteritems():
     ingredients[name] = Node("Ingredient", 
                              name = str(name))
 
@@ -76,13 +79,14 @@ for name, col in df.iteritems():
  
 Contain = Relationship.type("CONTAINS")
 
-for index, row in df.iterrows():
+for index, row in df2.iterrows():
     r = recipe[row['label']]
     
     for ingredient in list(row.index):
         i = ingredients[ingredient]
         if row[ingredient] == 1: 
             graph.create(Contain(r, i))
+
 
 
 #%% ---------------- Optimisation ---------------
@@ -194,6 +198,43 @@ def get_ingredients (my_r):
     return L[1:]
 
 
+def get_recipes_one(my_ing):
+    """
+    Renvoie la liste de toutes les recettes contenant l'ingrédient my_ing donné en entrée 
+    
+    Input : 
+        * my_ing : liste (ingrédients)
+    
+    Output : 
+        * chaîne de caractères (noms de recettes séparés par des virgules)
+
+    """
+    L = str()
+    
+    rq = f"MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE i.name IN [\'{my_ing}\'] RETURN DISTINCT r"
+    data = graph.run(rq).data()
+    for elem in data:
+        L = L + "\n" + str(elem['r']['name'])
+    return L
+
+def get_recipes_without_one(my_ing):
+    """
+    Renvoie la liste de toutes les recettes ne contenant pas l'ingrédient my_ing donné en entrée 
+    
+    Input : 
+        * my_ing : liste (ingrédients)
+    
+    Output : 
+        * chaîne de caractères (noms de recettes séparés par des virgules)
+
+    """
+    L = str()
+    
+    rq = f"MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE i.name NOT IN [\'{my_ing}\'] RETURN DISTINCT r"
+    data = graph.run(rq).data()
+    for elem in data:
+        L = L + "\n" + str(elem['r']['name'])
+    return L
 
 # Récupérer liste des recettes contenant un ingrédient donné
 def get_recipes():
