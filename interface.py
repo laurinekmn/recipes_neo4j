@@ -7,8 +7,8 @@ Created on Fri Nov  4 19:04:15 2022
 
 from tkinter import *
 from tkinter import ttk
-from onglets import create_VIZ, create_ING, create_REC
-from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
+# from onglets import create_VIZ, create_ING, create_REC
+# from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
 
 #%% --------------- COULEURS DE L'INTERFACE ------------------
 
@@ -19,23 +19,8 @@ COLOR_ACCENT3 = "#608e85"
 
 #%% ------------ SOUS-FENÊTRES DE L'INTERFACE-----------------
 
-def create_VIZ():
-    
-    win = Toplevel(window)
-    win.geometry("780x600")
-    win.config(background = COLOR_BG)
-    
-    Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
 
-    Main_title = Label(win, text = "Visualization of the dataset", 
-                       font = ("Arial", 28, "bold"), 
-                       bg = COLOR_BG, 
-                       fg = COLOR_ACCENT1)
-    Spacetop.pack()
-    Main_title.pack() 
-
-
-def create_ING():
+def create_LIST():
     win = Toplevel(window)
     win.geometry("780x600")
     win.config(background = COLOR_BG)
@@ -51,7 +36,7 @@ def create_ING():
     Main_title = Label(win, text = "List of ingredients", 
                        font = ("Arial", 28, "bold"), 
                        bg = COLOR_BG, 
-                       fg = COLOR_ACCENT2)
+                       fg = COLOR_ACCENT1)
     
     # Explication du fonctionnement de la fenêtre
     Explication = Label(win, text = "1) Choose a recipe from the list \n \n 2) Click the \"Update the list\" button to see the list of the ingredient!",
@@ -106,7 +91,151 @@ def create_ING():
     update.pack()
     Space3.pack()
     ListIng.pack()
+
+
+def create_ONE():
     
+    win = Toplevel(window)
+    win.geometry("780x600")
+    win.config(background = COLOR_BG)
+    
+    Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space0 = Label(win, text = "", height = 1, bg = COLOR_BG)
+    Space1 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space2 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space3 = Label(win, text = "", height = 3, bg = COLOR_BG)
+
+    Main_title = Label(win, text = "Recipes with one ingredient", 
+                       font = ("Arial", 28, "bold"), 
+                       bg = COLOR_BG, 
+                       fg = COLOR_ACCENT2)
+    
+    # Explication du fonctionnement de la fenêtre
+    Explication = Label(win, text = "1) Choose an ingredient from the list \n \n 2) Click the \"Update the list\" button to see the list of the recipes which contain it!",
+                        font = ("Arial", 13, "italic"), 
+                        bg = COLOR_BG, 
+                        fg = "black")
+    
+    # Menu déroulant des ingrédients     
+    OptionList = list_ingredients()
+
+    var = StringVar(win)
+    L_rec = StringVar(win)
+    var.set(OptionList[0])
+    L_rec.set(get_recipes_one(var.get()))
+
+    # Menu 
+    opt = OptionMenu(win, var, *OptionList)
+    opt.config(width=90, 
+               font=('Arial', 14, "bold"), 
+               bg = COLOR_BG, 
+               fg = "black")
+    
+    # Bouton pour mettre à jour la liste des ingrédients 
+    def update_L_rec ():
+        v = var.get()
+        L_rec.set(get_recipes_one(v))
+    
+    update = Button(win, 
+                    text = "Update the list", 
+                    font = ("Arial", 16, "bold"), 
+                    bg = COLOR_ACCENT1, 
+                    fg = "white",
+                    command = update_L_rec)
+    
+    
+    # Liste des ingrédients de la recette sélectionnée
+    ListRec = Label(win, 
+                    font = ("Arial", 13), 
+                    bg = COLOR_BG, 
+                    fg = "black",
+                    textvariable = L_rec)
+    
+    
+    Spacetop.pack()
+    Main_title.pack() 
+    Space0.pack()
+    Explication.pack()
+    Space1.pack()
+    opt.pack()
+    Space2.pack()
+    update.pack()
+    Space3.pack()
+    ListRec.pack()
+
+    
+
+def create_WITHOUT_ONE():
+    
+    win = Toplevel(window)
+    win.geometry("780x600")
+    win.config(background = COLOR_BG)
+    
+    Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space0 = Label(win, text = "", height = 1, bg = COLOR_BG)
+    Space1 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space2 = Label(win, text = "", height = 3, bg = COLOR_BG)
+    Space3 = Label(win, text = "", height = 3, bg = COLOR_BG)
+
+    Main_title = Label(win, text = "Recipes without one ingredient", 
+                       font = ("Arial", 28, "bold"), 
+                       bg = COLOR_BG, 
+                       fg = COLOR_ACCENT2)
+    
+    # Explication du fonctionnement de la fenêtre
+    Explication = Label(win, text = "1) Choose an ingredient from the list \n \n 2) Click the \"Update the list\" button to see the list of the recipes which contain it!",
+                        font = ("Arial", 13, "italic"), 
+                        bg = COLOR_BG, 
+                        fg = "black")
+    
+    # Menu déroulant des ingrédients     
+    OptionList = list_ingredients()
+
+    var = StringVar(win)
+    L_rec = StringVar(win)
+    var.set(OptionList[0])
+    L_rec.set(get_recipes_without_one(var.get()))
+
+    # Menu 
+    opt = OptionMenu(win, var, *OptionList)
+    opt.config(width=90, 
+               font=('Arial', 14, "bold"), 
+               bg = COLOR_BG, 
+               fg = "black")
+    
+    # Bouton pour mettre à jour la liste des ingrédients 
+    def update_L_rec ():
+        v = var.get()
+        L_rec.set(get_recipes_without_one(v))
+    
+    update = Button(win, 
+                    text = "Update the list", 
+                    font = ("Arial", 16, "bold"), 
+                    bg = COLOR_ACCENT1, 
+                    fg = "white",
+                    command = update_L_rec)
+    
+    
+    # Liste des ingrédients de la recette sélectionnée
+    ListRec = Label(win, 
+                    font = ("Arial", 13), 
+                    bg = COLOR_BG, 
+                    fg = "black",
+                    textvariable = L_rec)
+    
+    
+    Spacetop.pack()
+    Main_title.pack() 
+    Space0.pack()
+    Explication.pack()
+    Space1.pack()
+    opt.pack()
+    Space2.pack()
+    update.pack()
+    Space3.pack()
+    ListRec.pack()
+
+
 def create_REC():
     win = Toplevel(window)
     win.geometry("780x600")
@@ -161,25 +290,36 @@ Space0 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 Space1 = Label(frame, text = "", height = 3, bg = COLOR_BG)
 Space2 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 Space3 = Label(frame, text = "", height = 2, bg = COLOR_BG)
+Space4 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 
-# Bouton redirigeant vers fenêtre de visualisation des données 
-Bouton0 = Button(frame, text = "Visualize the structure of the dataset", 
+
+# Bouton redirigeant vers fenêtre pour connaître les ingrédients d'une recette
+Bouton0 = Button(frame, text = "Get a list of ingredients for a chosen recipe", 
                  font = ("Arial", 15), 
                  bg = COLOR_ACCENT1, 
                  fg = "white", 
-                 command = create_VIZ
+                 command = create_LIST
                  )
 
-# Bouton redirigeant vers fenêtre pour connaître les ingrédients d'une recette
-Bouton1 = Button(frame, text = "Get a list of ingredients for a chosen recipe", 
+# Bouton redirigeant vers fenêtre pour obtenir recettes contenant un ingrédient choisi
+Bouton1 = Button(frame, text = "Choose an ingredient you want in the recipe", 
                  font = ("Arial", 15), 
                  bg = COLOR_ACCENT2, 
                  fg = "white", 
-                 command = create_ING
+                 command = create_ONE
                  )
 
 # Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
-Bouton2 = Button(frame, text = "Find a recipe by selecting ingredients", 
+Bouton2 = Button(frame, text = "Choose an ingredient you don't want in the recipe", 
+                 font = ("Arial", 15), 
+                 bg = COLOR_ACCENT2, 
+                 fg = "white", 
+                 command = create_WITHOUT_ONE
+                 )
+
+
+# Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
+Bouton3 = Button(frame, text = "Find a recipe by selecting ingredients", 
                  font = ("Arial", 15), 
                  bg = COLOR_ACCENT3, 
                  fg = "white", 
@@ -226,6 +366,8 @@ Space2.pack()
 Bouton1.pack()
 Space3.pack()
 Bouton2.pack()
+Space4.pack()
+Bouton3.pack()
 
 window.config(menu=menup)
 
