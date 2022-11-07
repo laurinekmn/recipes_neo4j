@@ -8,7 +8,7 @@ Created on Fri Nov  4 19:04:15 2022
 from tkinter import *
 from tkinter import ttk
 # from onglets import create_VIZ, create_ING, create_REC
-# from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
+from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
 
 #%% --------------- COULEURS DE L'INTERFACE ------------------
 
@@ -193,7 +193,7 @@ def create_WITHOUT_ONE():
 
     var = StringVar(win)
     L_rec = StringVar(win)
-    var.set(OptionList[0])
+    var.set("OptionList[0]")
     L_rec.set(get_recipes_without_one(var.get()))
 
     # Menu 
@@ -236,19 +236,19 @@ def create_WITHOUT_ONE():
     ListRec.pack()
 
 
-def create_REC():
-    win = Toplevel(window)
-    win.geometry("780x600")
-    win.config(background = COLOR_BG)
+# def create_OWN():
+#     win = Toplevel(window)
+#     win.geometry("780x600")
+#     win.config(background = COLOR_BG)
 
-    Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
+#     Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
     
-    Main_title = Label(win, text = "Selection of ingredients", 
-                       font = ("Arial", 28, "bold"), 
-                       bg = COLOR_BG, 
-                       fg = COLOR_ACCENT3)
-    Spacetop.pack()
-    Main_title.pack() 
+#     Main_title = Label(win, text = "Selection of ingredients", 
+#                        font = ("Arial", 28, "bold"), 
+#                        bg = COLOR_BG, 
+#                        fg = COLOR_ACCENT3)
+#     Spacetop.pack() 
+#     Main_title.pack() 
 
 
 #%% ------------------ FENETRE D'ACCUEIL ---------------------
@@ -312,19 +312,19 @@ Bouton1 = Button(frame, text = "Choose an ingredient you want in the recipe",
 # Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
 Bouton2 = Button(frame, text = "Choose an ingredient you don't want in the recipe", 
                  font = ("Arial", 15), 
-                 bg = COLOR_ACCENT2, 
+                 bg = COLOR_ACCENT3, 
                  fg = "white", 
                  command = create_WITHOUT_ONE
                  )
 
 
-# Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
-Bouton3 = Button(frame, text = "Find a recipe by selecting ingredients", 
-                 font = ("Arial", 15), 
-                 bg = COLOR_ACCENT3, 
-                 fg = "white", 
-                 command = create_REC
-                 )
+# # Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
+# Bouton3 = Button(frame, text = "Type your own query", 
+#                  font = ("Arial", 15), 
+#                  bg = COLOR_ACCENT3, 
+#                  fg = "white", 
+#                  command = create_OWN
+#                  )
 
 
 
@@ -366,8 +366,8 @@ Space2.pack()
 Bouton1.pack()
 Space3.pack()
 Bouton2.pack()
-Space4.pack()
-Bouton3.pack()
+# Space4.pack()
+# Bouton3.pack()
 
 window.config(menu=menup)
 
