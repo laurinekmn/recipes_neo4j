@@ -6,9 +6,8 @@ Created on Fri Nov  4 19:04:15 2022
 """
 
 from tkinter import *
-from tkinter import ttk
 # from onglets import create_VIZ, create_ING, create_REC
-from recettes import list_ingredients, list_recipes, get_ingredients, get_recipes
+from recettes import *
 
 #%% --------------- COULEURS DE L'INTERFACE ------------------
 
@@ -16,6 +15,9 @@ COLOR_BG = "#c1bebe"
 COLOR_ACCENT1 = "#3d915f"
 COLOR_ACCENT2 = "#855f53"
 COLOR_ACCENT3 = "#608e85"
+
+#%%
+
 
 #%% ------------ SOUS-FENÊTRES DE L'INTERFACE-----------------
 
@@ -71,14 +73,12 @@ def create_LIST():
                     fg = "white",
                     command = update_L_ing)
     
-    
     # Liste des ingrédients de la recette sélectionnée
     ListIng = Label(win, 
                     font = ("Arial", 13), 
                     bg = COLOR_BG, 
                     fg = "black",
                     textvariable = L_ing)
-    
     
     # "Construction" de la fenêtre avec pack 
     Spacetop.pack()
@@ -105,7 +105,7 @@ def create_ONE():
     Space2 = Label(win, text = "", height = 3, bg = COLOR_BG)
     Space3 = Label(win, text = "", height = 3, bg = COLOR_BG)
 
-    Main_title = Label(win, text = "Recipes with one ingredient", 
+    Main_title = Label(win, text = "Specific ingredient in a recipe", 
                        font = ("Arial", 28, "bold"), 
                        bg = COLOR_BG, 
                        fg = COLOR_ACCENT2)
@@ -183,7 +183,7 @@ def create_WITHOUT_ONE():
                        fg = COLOR_ACCENT2)
     
     # Explication du fonctionnement de la fenêtre
-    Explication = Label(win, text = "1) Choose an ingredient from the list \n \n 2) Click the \"Update the list\" button to see the list of the recipes which contain it!",
+    Explication = Label(win, text = "1) Choose an ingredient from the list \n \n 2) Click the \"Update the list\" button to see the list of the recipes which contain don't it!",
                         font = ("Arial", 13, "italic"), 
                         bg = COLOR_BG, 
                         fg = "black")
@@ -193,7 +193,7 @@ def create_WITHOUT_ONE():
 
     var = StringVar(win)
     L_rec = StringVar(win)
-    var.set("OptionList[0]")
+    var.set(OptionList[0])
     L_rec.set(get_recipes_without_one(var.get()))
 
     # Menu 
@@ -223,6 +223,13 @@ def create_WITHOUT_ONE():
                     fg = "black",
                     textvariable = L_rec)
     
+    cadre0 = Frame(win, width =400, height =400)
+    canevas0 = Canvas(cadre0, bg =COLOR_BG, width =400, height =200, scrollregion =(0, 0, 250, 250))
+    ascenseur0 = Scrollbar(cadre0)
+    ascenseur0.config(command = canevas0.yview)
+    canevas0.config(width =250, height = 200)
+    canevas0.config(yscrollcommand = ascenseur0.set)
+    
     
     Spacetop.pack()
     Main_title.pack() 
@@ -233,22 +240,15 @@ def create_WITHOUT_ONE():
     Space2.pack()
     update.pack()
     Space3.pack()
-    ListRec.pack()
-
-
-# def create_OWN():
-#     win = Toplevel(window)
-#     win.geometry("780x600")
-#     win.config(background = COLOR_BG)
-
-#     Spacetop = Label(win, text = "", height = 3, bg = COLOR_BG)
     
-#     Main_title = Label(win, text = "Selection of ingredients", 
-#                        font = ("Arial", 28, "bold"), 
-#                        bg = COLOR_BG, 
-#                        fg = COLOR_ACCENT3)
-#     Spacetop.pack() 
-#     Main_title.pack() 
+    cadre0.pack()
+    ascenseur0.pack(side = RIGHT, fill = Y)
+    canevas0.pack(side = LEFT, expand =True)
+    texte1 =canevas0.create_text(12, 12, textvariable = L_rec, anchor = NW)
+
+
+
+    ListRec.pack()
 
 
 #%% ------------------ FENETRE D'ACCUEIL ---------------------
@@ -292,7 +292,6 @@ Space2 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 Space3 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 Space4 = Label(frame, text = "", height = 2, bg = COLOR_BG)
 
-
 # Bouton redirigeant vers fenêtre pour connaître les ingrédients d'une recette
 Bouton0 = Button(frame, text = "Get a list of ingredients for a chosen recipe", 
                  font = ("Arial", 15), 
@@ -317,37 +316,15 @@ Bouton2 = Button(frame, text = "Choose an ingredient you don't want in the recip
                  command = create_WITHOUT_ONE
                  )
 
-
-# # Bouton redirigeant ver fenêtre pour trouver des recettes avec des conditions sur les ingrédients
-# Bouton3 = Button(frame, text = "Type your own query", 
-#                  font = ("Arial", 15), 
-#                  bg = COLOR_ACCENT3, 
-#                  fg = "white", 
-#                  command = create_OWN
-#                  )
-
-
-
 # ====
 # Menu 
 # ====
 
 # Création d'un menu en haut de la fenêtre d'accueil permettant de quitter l'interface
 menup = Menu(window)
-
 menu1 = Menu(window, tearoff = 0)
-# menu1.add_command(label="Nouveau Fichier", command = <fonction>)
-# menu1.add_separator()
 menu1.add_command(label = "Quit", command = window.destroy)
 menup.add_cascade(label = "File", menu = menu1)
-
-# menu2 = Menu(window, tearoff = 0)
-# menu2.add_command(label = "Nouveau Fichier", command = <fonction>)
-# menup.add_cascade(label = "Edition", menu = menu2)
-
-
-
-
 
 # ==================
 # BUILD THE VIEWPORT
@@ -358,7 +335,6 @@ Sub_title.pack()
 Main_title.pack()
 frame.pack() 
 Space0.pack()
-# Name.pack()
 Intro.pack()
 Space1.pack()
 Bouton0.pack()
@@ -366,16 +342,7 @@ Space2.pack()
 Bouton1.pack()
 Space3.pack()
 Bouton2.pack()
-# Space4.pack()
-# Bouton3.pack()
 
 window.config(menu=menup)
 
-
-
 window.mainloop()
-
-
-
-# Lancer un fichier par un autre 
-# os.system(nomdefichier.py)
