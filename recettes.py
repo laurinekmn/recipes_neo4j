@@ -8,7 +8,6 @@ Laurine Komendanczyk
 from py2neo import Graph, Node, Relationship
 import pandas as pd
 import os
-import numpy as np
 
 # Connection au graphe Neo4J
 global graph
@@ -24,19 +23,11 @@ df = pd.read_csv("./Data/recipes_data.csv", delimiter=",")
 
 SUBSET_SIZE = 200
 
-df2 = df.copy()[0:SUBSET_SIZE]
+def create_subset(SUBSET_SIZE):
+    df2 = df.copy()[0:SUBSET_SIZE]
+    return df2
 
-df2['label'] = df2['label'].str.replace("'", "")
-# colnames = list(df2.columns)
-# colnames = colnames[1: ]
-# df2.dtypes
-
-# for col in colnames : 
-#     # print(type(col))
-#     df2.iloc[: ,1: ] = df2.iloc[: ,1: ].astype('int32')
-#     # df2.iloc[:,1:].astype('int32', copy = False)
-
-# df2.dtypes
+create_subset(SUBSET_SIZE)
 
 #%% --------------- ARE THERE MISSING VALUES -----------------
 
@@ -46,7 +37,7 @@ df.isna().sum().sum()
 
 #%% ---------------NODES AND RELATIONSHIPS-----------------
 
-def create_graph():
+def create_graph(df):
     # Graph Cleaning before start
     graph.run("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r")
     
@@ -58,7 +49,7 @@ def create_graph():
     # Creation of the nodes and relatioships
     # =========================================
     
-    for index, row in df2.iterrows():
+    for index, row in df.iterrows():
         recipe[row['label']] = Node("Recipe", name=str(row['label']))
         r = recipe[row['label']]
         L = [i for i in list(row.index) if row[i] == 1]
@@ -111,9 +102,9 @@ def list_ingredients ():
         L.append(elem['i']['name'])
     return (L)
 
-# =============
-# Interface
-# =============
+# ===================================
+# Requêtes utilisées dans l'interface
+# ===================================
 
 rq = "MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) RETURN list(r, count(DISTINCT i)"
 
@@ -180,29 +171,43 @@ def get_recipes_without_one(my_ing):
         L = L + "\n" + str(elem['r.name'])
     return L
 
-# Récupérer liste des recettes contenant un ingrédient donné
-def get_recipes():
+# ================
+# Requêtes en plus
+# ================
+
+# >>>> Récupérer liste des recettes contenant un ingrédient donné
+def get_recipes(L_ing):
     """
-    Renvoie la liste de toutes les recettes contenant au moins les ingrédients de my_i_yes et ne contenant pas ceux de my_i_no donnés en entrée 
+    Renvoie la liste de toutes les recettes contenant les ingrédients de L_ing donnés en entrée 
     
     Input : 
-        * my_i_yes : liste (ingrédients)
-        * my_i_no : liste (ingrédients)
+        * L_ing : liste (ingrédients)
     
-    Output : liste (noms de recettes)
+    Output : 
+        * L : liste (noms de recettes)
     """
     L = list()
-    my_i_yes = list()
-    my_i_no = list()
-    
-    rq = f"match (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE i.name IN {my_i_yes} AND WHERE i.name NOT IN {my_i_no} RETURN r"
+    if len(L_ing) == 0 : 
+        return(print("La liste doit contenir au moins un ingrédient"))
+    if len(L_ing)==1 : 
+        rq = "MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE (r)-[:CONTAINS]-> (:Ingredient {name:" + f"\'{L_ing[0]}\'" + "}) RETURN DISTINCT r.name"
+    else : 
+        rq = "MATCH (r:Recipe)-[:CONTAINS]->(i:Ingredient) WHERE (r)-[:CONTAINS]-> (:Ingredient {name:" + f"\'{L_ing[0]}\'" + "})"
+        for k in range(1,len(L_ing)):
+            rq = rq + "AND (r)-[:CONTAINS]-> (:Ingredient {name:" + f"\'{L_ing[k]}\'" + "})"
+        rq = rq + "RETURN DISTINCT r.name"
+
     data = graph.run(rq).data()
     for elem in data:
-        L.append(elem['r']['name'])
-    return L
+        L.append(elem['r.name'])
+    return (L)
 
+# Exemple
+print("===============================================")
+print ("Recettes contenant les ingrédients 'olive oil' et 'red wine vinegar'")
+get_recipes(["olive oil", "red wine vinegar"]) # Beet Salad
 
-# Fonction renvoyant le résultat d'une requête Cypher entrée par l'utilisateur
+# >>>> Fonction renvoyant le résultat d'une requête Cypher entrée par l'utilisateur
 def solve_my_query(rq):
     """
     Renvoie le résultat d'une requête Cypher entrée par l'utilisateur
