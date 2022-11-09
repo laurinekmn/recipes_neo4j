@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Nov  4 19:04:15 2022
+Interface pour obtenir 
+    * la liste d'ingrédients d'une recette choisie par l'utilisateur
+    * une liste d recettes contenant/ne contenant pas un ingrédient choisi par l'utilisateur
 
-@author: lauri
+par Laurine Komendanczyk
 """
 
 from tkinter import *
-# from onglets import create_VIZ, create_ING, create_REC
-# from recettes import *
+from recettes import *
 
 #%% --------------- COULEURS DE L'INTERFACE ------------------
 
@@ -16,9 +17,13 @@ COLOR_ACCENT1 = "#3d915f"
 COLOR_ACCENT2 = "#855f53"
 COLOR_ACCENT3 = "#608e85"
 
-#%% ------------ SOUS-FENÊTRES DE L'INTERFACE-----------------
+#%% ------------ SOUS-FENÊTRE 1 - Ingrédients d'une recette -----------------
 
 def create_LIST():
+    """
+    Fonction permettant d'ouvrir une fenêtre lors d'un clic sur le bouton 'Get a list of ingredients for a chosen recipe' de la fenêtre d'accueil.
+    Dans cette fenêtre l'uilisateur choisit une recette via le menu déroulant, clique sur le bouton 'Update' et récupère la liste des ingrédients de la recette.
+    """
     win = Toplevel(window)
     win.geometry("780x600")
     win.config(background = COLOR_BG)
@@ -45,14 +50,13 @@ def create_LIST():
     # Menu déroulant des recettes     
     OptionList = list_recipes()
 
-    var = StringVar(win)
-    L_ing = StringVar(win)
+    var = StringVar(win) #réactif
+    L_ing = StringVar(win) #réactif
     var.set(OptionList[0])
     L_ing.set(get_ingredients(var.get()))
 
-    # Menu 
     opt = OptionMenu(win, var, *OptionList)
-    opt.config(width=90, 
+    opt.config(width = 90, 
                font=('Arial', 14, "bold"), 
                bg = COLOR_BG, 
                fg = "black")
@@ -86,7 +90,7 @@ def create_LIST():
 
 
     
-    # "Construction" de la fenêtre avec pack 
+    # Construction de la fenêtre avec pack 
     Spacetop.pack()
     Main_title.pack()  
     Space0.pack()
@@ -106,10 +110,13 @@ def create_LIST():
                                  text = L_ing.get(), 
                                  anchor = NW)
 
-#%% 
+#%% ------ SOUS-FENÊTRE 2 - Recettes contenant un ingrédient précis -----------
 
 def create_ONE():
-    
+    """
+    Fonction permettant d'ouvrir une fenêtre lors d'un clic sur le bouton 'Choose an ingredient you want in the recipe' de la fenêtre d'accueil.
+    Dans cette fenêtre l'uilisateur choisit un ingrédient via le menu déroulant, clique sur le bouton 'Update' et récupère la liste des recettes contenant l'ingrédient sélectionné.
+    """
     win = Toplevel(window)
     win.geometry("780x600")
     win.config(background = COLOR_BG)
@@ -134,19 +141,18 @@ def create_ONE():
     # Menu déroulant des ingrédients     
     OptionList = list_ingredients()
 
-    var = StringVar(win)
-    L_rec = StringVar(win)
+    var = StringVar(win) #réactif
+    L_rec = StringVar(win) # réactif
     var.set(OptionList[0])
     L_rec.set(get_recipes_one(var.get()))
-
-    # Menu 
+ 
     opt = OptionMenu(win, var, *OptionList)
     opt.config(width=90, 
                font=('Arial', 14, "bold"), 
                bg = COLOR_BG, 
                fg = "black")
     
-    # Bouton pour mettre à jour la liste des ingrédients 
+    # Bouton pour mettre à jour la liste des recettes 
     def update_L_rec ():
         v = var.get()
         L_rec.set(get_recipes_one(v))
@@ -160,7 +166,7 @@ def create_ONE():
                     fg = "white",
                     command = update_L_rec)
     
-    # Création d'un canva pour afficher le résultat de la requête
+    # Création d'un canvas pour afficher le résultat de la requête
     cadre0 = Frame(win, width = 500, height = 400)
     
     canevas0 = Canvas(cadre0, bg = COLOR_BG, 
@@ -173,6 +179,7 @@ def create_ONE():
     canevas0.config(scrollregion = (0,0,750, 750),
                     yscrollcommand = ascenseur0.set)
     
+    # Construction de la fenêtre avec pack 
     Spacetop.pack()
     Main_title.pack() 
     Space0.pack()
@@ -192,10 +199,13 @@ def create_ONE():
                                  text = L_rec.get(), 
                                  anchor = NW)
     
-#%%
+#%% ------ SOUS-FENÊTRE 3 - Recettes sans un ingrédient précis ------------
 
 def create_WITHOUT_ONE():
-    
+    """
+    Fonction permettant d'ouvrir une fenêtre lors d'un clic sur le bouton 'Choose an ingredient you don't want in the recipe' de la fenêtre d'accueil.
+    Dans cette fenêtre l'uilisateur choisit un ingrédient via le menu déroulant, clique sur le bouton 'Update' et récupère la liste des recettes ne contenant pas l'ingrédient sélectionné.
+    """
     win = Toplevel(window)
     win.geometry("780x600")
     win.config(background = COLOR_BG)
@@ -220,19 +230,18 @@ def create_WITHOUT_ONE():
     # Menu déroulant des ingrédients     
     OptionList = list_ingredients()
 
-    var = StringVar(win)
-    L_rec = StringVar(win)
+    var = StringVar(win) #réactif
+    L_rec = StringVar(win) #réactif
     var.set(OptionList[0])
     L_rec.set(get_recipes_without_one(var.get()))
 
-    # Menu 
     opt = OptionMenu(win, var, *OptionList)
     opt.config(width=90, 
                font=('Arial', 14, "bold"), 
                bg = COLOR_BG, 
                fg = "black")
     
-    # Bouton pour mettre à jour la liste des ingrédients 
+    # Bouton pour mettre à jour la liste des recettes 
     def update_L_rec ():
         v = var.get()
         L_rec.set(get_recipes_without_one(v))
@@ -245,7 +254,7 @@ def create_WITHOUT_ONE():
                     fg = "white",
                     command = update_L_rec)   
     
-    # Création d'un canva pour afficher le résultat de la requête
+    # Création d'un canvas pour afficher le résultat de la requête
     cadre0 = Frame(win, width = 500, height = 400)
     
     canevas0 = Canvas(cadre0, bg = COLOR_BG, 
@@ -258,7 +267,7 @@ def create_WITHOUT_ONE():
     canevas0.config(scrollregion = (0,0,4000, 4000),
                     yscrollcommand = ascenseur0.set)
     
-    
+    # Construction de la fenêtre avec pack 
     Spacetop.pack()
     Main_title.pack() 
     Space0.pack()
