@@ -363,9 +363,9 @@ menu1 = Menu(window, tearoff = 0)
 menu1.add_command(label = "Quit", command = window.destroy)
 menup.add_cascade(label = "File", menu = menu1)
 
-# ==================
-# BUILD THE VIEWPORT
-# ==================
+# ==========================
+# Construction de la fenêtre 
+# ==========================
 
 Spacetop.pack()
 Sub_title.pack()
